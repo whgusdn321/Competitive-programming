@@ -1,0 +1,113 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int n, m;
+char maap[50][50];
+bool visited[50][50];
+int dx[4] = {0, -1, 0, 1};
+int dy[4] = {1, 0, -1, 0};
+
+
+void dfs(int y, int x, int &cnt){
+    visited[y][x] = true;
+    if(maap[y][x] == 'G'){
+        cnt++;
+    }
+    for(int i=0; i<4; i++){
+        int ny = y + dy[i];
+        int nx = x + dx[i];
+        if(0<= ny && ny < n && 0<=nx && nx < m &&
+        !visited[ny][nx] && maap[ny][nx] != '#'){
+            dfs(ny, nx, cnt);
+        }
+    }    
+    return;
+}
+
+void print(){
+    for(int i=0; i<n; i++){
+        for(int j=0; j<m; j++){
+            cout << maap[i][j] << ' ';
+        }
+        cout << '\n';
+    }
+}
+
+void solve(){
+    cin >> n >> m;
+    int good = 0, bad = 0;
+    for(int i=0; i<n; i++){
+        for(int j=0; j<m; j++){
+            cin >> maap[i][j];
+            if(maap[i][j] == 'G')
+                good++;
+            if(maap[i][j] == 'B')
+                bad++;
+        }
+    }
+    if(!bad){
+        int cnt = 0;
+        for(int i=0; i<50; i++)
+            for(int j=0; j<50; j++)
+                visited[i][j] = false;
+        dfs(n-1, m-1, cnt);
+        if(cnt == good)
+            cout << "Yes" << '\n';
+        else
+            cout << "No" << '\n';
+        return;
+    }
+    else{
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(maap[i][j] == 'B'){
+                    for(int k=0; k<4; k++){
+                        if(0 <= i + dy[k] && i+dy[k] < n &&
+                        0<= j + dx[k] && j + dx[k] < m && maap[i+dy[k]][j+dx[k]] == '.'){
+                            maap[i+dy[k]][j+dx[k]] = '#';
+                        }
+                        else if(0 <= i + dy[k] && i+dy[k] < n &&
+                        0<= j + dx[k] && j + dx[k] < m && maap[i+dy[k]][j+dx[k]] == 'G'){
+                            cout << "No" << '\n';
+                            return;
+                        }
+                        else {;}
+                    } 
+                }
+            }
+        }
+        // print();
+        int cnt = 0;
+        // fill(visited[0], visited[0]+50*50, false);
+        for(int i=0; i<50; i++)
+            for(int j=0; j<50; j++)
+                visited[i][j] = false;
+        if(maap[n-1][m-1] == '#' && good > 0){
+            cout << "No" << '\n';
+            return;
+        }
+        dfs(n-1, m-1, cnt);
+        if(cnt == good){
+            cout << "Yes" << '\n';
+        }
+        else{
+            cout << "No" << '\n';
+        }
+        return;
+    }
+    
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    int T;
+    cin >> T;
+    for(int tc = 0; tc < T; tc++){
+        solve();
+    }
+    
+    return 0;
+}

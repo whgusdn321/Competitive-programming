@@ -1,0 +1,2 @@
+select S.Score, Dense_Rank() over(order by S.Score desc) as 'Rank'
+from Scores as S
